@@ -224,7 +224,7 @@ sources/go-piper/libpiper_binding.a: sources/go-piper
 	$(MAKE) -C sources/go-piper libpiper_binding.a example/main
 
 backend/cpp/llama/llama.cpp:
-	$(MAKE) -C backend/cpp/llama llama.cpp	
+	$(MAKE) -C backend/cpp/llama llama.cpp
 
 get-sources: backend/cpp/llama/llama.cpp sources/go-llama sources/go-llama-ggml sources/go-ggml-transformers sources/gpt4all sources/go-piper sources/go-rwkv sources/whisper.cpp sources/go-bert sources/go-stable-diffusion
 	touch $@
@@ -385,6 +385,7 @@ protogen-python:
 	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/transformers/ --grpc_python_out=backend/python/transformers/ backend/backend.proto
 	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/autogptq/ --grpc_python_out=backend/python/autogptq/ backend/backend.proto
 	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/exllama/ --grpc_python_out=backend/python/exllama/ backend/backend.proto
+	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/exllamav2/ --grpc_python_out=backend/python/exllamav2/ backend/backend.proto
 	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/bark/ --grpc_python_out=backend/python/bark/ backend/backend.proto
 	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/diffusers/ --grpc_python_out=backend/python/diffusers/ backend/backend.proto
 	python3 -m grpc_tools.protoc -Ibackend/ --python_out=backend/python/vall-e-x/ --grpc_python_out=backend/python/vall-e-x/ backend/backend.proto
@@ -403,6 +404,7 @@ prepare-extra-conda-environments:
 	$(MAKE) -C backend/python/vall-e-x
 	$(MAKE) -C backend/python/exllama
 	$(MAKE) -C backend/python/petals
+	$(MAKE) -C backend/python/exllamav2
 
 
 backend-assets/grpc:
@@ -436,10 +438,10 @@ ifdef BUILD_GRPC_FOR_BACKEND_LLAMA
 	CMAKE_ARGS="${CMAKE_ARGS} ${ADDED_CMAKE_ARGS}" LLAMA_VERSION=$(CPPLLAMA_VERSION) $(MAKE) -C backend/cpp/llama grpc-server
 else
 	echo "BUILD_GRPC_FOR_BACKEND_LLAMA is not defined."
-	LLAMA_VERSION=$(CPPLLAMA_VERSION) $(MAKE) -C backend/cpp/llama grpc-server			
+	LLAMA_VERSION=$(CPPLLAMA_VERSION) $(MAKE) -C backend/cpp/llama grpc-server
 endif
 ## BACKEND CPP LLAMA END
-		
+
 ##
 backend-assets/grpc/llama-cpp: backend-assets/grpc backend/cpp/llama/grpc-server
 	cp -rfv backend/cpp/llama/grpc-server backend-assets/grpc/llama-cpp
